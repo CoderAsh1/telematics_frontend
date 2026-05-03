@@ -7,8 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import { Truck, Navigation, Signal, Activity, Wifi, WifiOff, Gauge, Battery } from 'lucide-react';
 import api from '../api/api';
 
-// Replace with your EC2 Public IP
-const SOCKET_URL = "http://68.183.246.131:3000";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL
 
 // Fix for default marker icons in Leaflet with Vite
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
@@ -112,10 +111,8 @@ const LiveTracker = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        console.log('📡 Fetching initial vehicle data...');
         const response = await api.get('/vehicles/live');
         const data = response.data;
-        console.log('🚛 Initial Vehicles Loaded:', data);
         setVehicles(data);
       } catch (err) {
         console.error('❌ Failed to fetch initial vehicle data:', err);
