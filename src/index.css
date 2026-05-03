@@ -7,7 +7,7 @@
   --color-secondary-foreground: #1A1A1A;
   --color-dark: #1A1A1A;
   --color-accent: #D4AF37;
-  
+
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 }
 
@@ -34,11 +34,75 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-4px);
+  }
+
+  75% {
+    transform: translateX(4px);
+  }
 }
 
 .animate-shake {
   animation: shake 0.2s ease-in-out 0s 2;
+}
+
+/* Custom Leaflet Marker Styles */
+.custom-marker {
+  background: transparent;
+  border: none;
+}
+
+.marker-wrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-direction {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marker-direction .circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.marker-direction .inner-dot {
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.marker-direction .beak {
+  position: absolute;
+  top: -6px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 12px solid black; /* Color will be overridden by inline style */
+  z-index: 1;
 }
