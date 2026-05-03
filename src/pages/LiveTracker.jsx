@@ -150,8 +150,11 @@ const LiveTracker = () => {
 
   // 3. Socket Connection for Real-time Updates
   useEffect(() => {
-    const socket = io(SOCKET_URL, {
-      transports: ['websocket'],
+    const socket = io("https://tracker.bdph.in", {
+      transports: ["websocket"],
+      secure: true,
+      reconnection: true,
+      reconnectionAttempts: 5
     });
 
     socket.on('connect', () => {
