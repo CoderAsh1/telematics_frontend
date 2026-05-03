@@ -57,6 +57,9 @@
 .custom-marker {
   background: transparent;
   border: none;
+  transition: all 0.7s ease-out;
+  /* Fast, responsive movement */
+  z-index: 500 !important;
 }
 
 .marker-wrapper {
@@ -103,6 +106,32 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-bottom: 12px solid black; /* Color will be overridden by inline style */
+  border-bottom: 12px solid black;
+  /* Color will be overridden by inline style */
   z-index: 1;
+}
+
+/* Pulsing effect for active movement */
+.marker-direction.moving .circle::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.5;
+  animation: marker-pulse 2s infinite;
+  z-index: -1;
+}
+
+@keyframes marker-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
 }

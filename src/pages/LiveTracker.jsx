@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { io } from 'socket.io-client';
 import Layout from '../components/Layout';
@@ -15,21 +15,26 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 let DefaultIcon = L.icon({
-    iconUrl: markerIcon,
-    shadowUrl: markerShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41]
 });
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const renderVehicleIcon = (angle = 0, status = 'Moving') => {
+const INITIAL_CENTER = [24.589018806784583, 87.44980490379005];
+const INITIAL_ZOOM = 8;
+
+const renderVehicleIcon = (angle = 0, status = 'Moving', speed = 0) => {
   const color = status === 'Moving' ? '#10b981' : '#f59e0b';
+  const isMoving = speed > 0 || status === 'Moving';
+
   return L.divIcon({
     className: 'custom-marker',
     html: `
       <div class="marker-wrapper">
-        <div class="marker-direction" style="transform: rotate(${angle}deg);">
+        <div class="marker-direction ${isMoving ? 'moving' : ''}" style="transform: rotate(${angle}deg);">
           <div class="beak" style="border-bottom-color: ${color};"></div>
           <div class="circle" style="background-color: ${color};">
              <div class="inner-dot"></div>
@@ -40,6 +45,60 @@ const renderVehicleIcon = (angle = 0, status = 'Moving') => {
     iconSize: [40, 40],
     iconAnchor: [20, 20],
   });
+};
+
+const VehicleMarker = React.memo(({ vehicle, onSelect }) => {
+  const lat = vehicle.latitude || vehicle.lat;
+  const lng = vehicle.longitude || vehicle.lng;
+
+  if (!lat || !lng) return null;
+
+  return (
+    <Marker
+      position={[lat, lng]}
+      icon={renderVehicleIcon(vehicle.angle, vehicle.status, vehicle.speed)}
+      eventHandlers={{
+        click: () => onSelect(vehicle),
+      }}
+    >
+      <Popup>
+        <div className="p-2 min-w-[150px]">
+          <p className="font-black text-dark text-sm border-b border-slate-100 pb-1 mb-2">{vehicle.vehicle_no || 'Vehicle'}</p>
+          <div className="space-y-1">
+            <p className="text-[10px] flex justify-between"><span className="text-slate-400 font-bold">STATUS:</span> <span className="font-bold text-primary">{vehicle.status || 'N/A'}</span></p>
+            <p className="text-[10px] flex justify-between"><span className="text-slate-400 font-bold">SPEED:</span> <span className="font-bold text-primary">{vehicle.speed || 0} km/h</span></p>
+            <p className="text-[10px] flex justify-between"><span className="text-slate-400 font-bold">ANGLE:</span> <span className="font-bold text-primary">{vehicle.angle || 0}°</span></p>
+          </div>
+        </div>
+      </Popup>
+    </Marker>
+  );
+});
+
+// Component to handle map centering and zooming
+const MapController = ({ selectedVehicle }) => {
+  const map = useMap();
+  const lastFollowedId = React.useRef(null);
+
+  useEffect(() => {
+    if (selectedVehicle) {
+      const lat = selectedVehicle.latitude || selectedVehicle.lat;
+      const lng = selectedVehicle.longitude || selectedVehicle.lng;
+
+      // Only flyTo if this is a NEW selection
+      if (lat && lng && lastFollowedId.current !== selectedVehicle.vehicle_id) {
+        lastFollowedId.current = selectedVehicle.vehicle_id;
+        map.flyTo([lat, lng], 16, {
+          duration: 1.5,
+          easeLinearity: 0.25
+        });
+      }
+    } else {
+      lastFollowedId.current = null;
+    }
+  }, [selectedVehicle, map]);
+
+  return null;
 };
 
 const LiveTracker = () => {
@@ -109,32 +168,45 @@ const LiveTracker = () => {
     });
 
     socket.on('v1_live_update', (data) => {
-      console.log('🚛 Real-time Update Received:', data);
-      
+      console.log(`🚛 Real-time Update for ${data.vehicle_no || 'Unknown'}:`, data);
+
       setVehicles((prevVehicles) => {
-        const index = prevVehicles.findIndex((v) => String(v.imei) === String(data.imei));
-        
+        const index = prevVehicles.findIndex((v) =>
+          (data.vehicle_id && Number(v.vehicle_id) === Number(data.vehicle_id)) ||
+          (data.vehicle_no && v.vehicle_no === data.vehicle_no) ||
+          ((data.imei || data.IMEI) && String(v.imei) === String(data.imei || data.IMEI))
+        );
+
         if (index !== -1) {
           const updatedVehicles = [...prevVehicles];
-          const updatedVehicle = { 
-            ...updatedVehicles[index], 
+          const updatedVehicle = {
+            ...updatedVehicles[index],
             ...data,
-            vehicle_no: updatedVehicles[index].vehicle_no,
-            vehicle_id: updatedVehicles[index].vehicle_id
+            // NORMALIZE COORDINATES: Ensure live lat/lng overwrites DB latitude/longitude
+            latitude: data.lat || data.latitude || updatedVehicles[index].latitude,
+            longitude: data.lng || data.longitude || updatedVehicles[index].longitude,
+            vehicle_id: updatedVehicles[index].vehicle_id || data.vehicle_id,
+            vehicle_no: updatedVehicles[index].vehicle_no || data.vehicle_no
           };
           updatedVehicles[index] = updatedVehicle;
-          
-          // Use functional update for setSelectedVehicle to avoid dependency on selectedVehicle
+
           setSelectedVehicle(prev => {
-            if (prev && String(prev.imei) === String(data.imei)) {
+            if (prev && (
+              (data.vehicle_id && Number(prev.vehicle_id) === Number(data.vehicle_id)) ||
+              (data.vehicle_no && prev.vehicle_no === data.vehicle_no)
+            )) {
               return updatedVehicle;
             }
             return prev;
           });
-          
+
           return updatedVehicles;
         } else {
-          return [...prevVehicles, data];
+          return [...prevVehicles, {
+            ...data,
+            latitude: data.lat || data.latitude,
+            longitude: data.lng || data.longitude
+          }];
         }
       });
     });
@@ -160,7 +232,7 @@ const LiveTracker = () => {
               {isConnected ? <Wifi size={16} className="animate-pulse" /> : <WifiOff size={16} />}
             </div>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto custom-scrollbar">
             {isLoading ? (
               <div className="p-10 text-center space-y-4">
@@ -169,9 +241,9 @@ const LiveTracker = () => {
               </div>
             ) : vehicles.length === 0 ? (
               <div className="p-10 text-center space-y-4">
-                 <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
-                    <Truck className="text-slate-300" />
-                 </div>
+                <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mx-auto">
+                  <Truck className="text-slate-300" />
+                </div>
                 <p className="text-sm text-slate-400">No vehicles found in database.</p>
               </div>
             ) : (
@@ -193,16 +265,16 @@ const LiveTracker = () => {
                     </div>
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">IMEI: {v.imei}</p>
                     {(v.latitude || v.lat) && (
-                        <div className="flex items-center gap-3 mt-3">
-                            <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold">
-                                <Activity className="w-3 h-3 text-primary" />
-                                {v.speed || 0} km/h
-                            </div>
-                            <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold">
-                                <Battery className="w-3 h-3 text-orange-500" />
-                                {v.voltage || 0}V
-                            </div>
+                      <div className="flex items-center gap-3 mt-3">
+                        <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold">
+                          <Activity className="w-3 h-3 text-primary" />
+                          {v.speed || 0} km/h
                         </div>
+                        <div className="flex items-center gap-1 text-[10px] text-slate-500 font-bold">
+                          <Battery className="w-3 h-3 text-orange-500" />
+                          {v.voltage || 0}V
+                        </div>
+                      </div>
                     )}
                   </div>
                 </button>
@@ -213,112 +285,94 @@ const LiveTracker = () => {
 
         {/* Right Area: Map */}
         <div className="flex-1 relative z-10">
-          <MapContainer 
-            center={[28.6139, 77.2090]} 
-            zoom={5} 
+          <MapContainer
+            center={INITIAL_CENTER}
+            zoom={INITIAL_ZOOM}
             style={{ height: '100%', width: '100%' }}
             zoomControl={false}
           >
+            <MapController selectedVehicle={selectedVehicle} />
             <TileLayer
               attribution='&copy; Google Maps'
               url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
               subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
               maxZoom={20}
             />
-            
+
             {routeHistory.length > 0 && (
-              <Polyline 
-                positions={routeHistory} 
-                color="#6366f1" 
-                weight={4} 
+              <Polyline
+                positions={routeHistory}
+                color="#6366f1"
+                weight={4}
                 opacity={0.6}
                 dashArray="10, 10"
               />
             )}
 
-            {vehicles.map((v) => {
-              const lat = v.latitude || v.lat;
-              const lng = v.longitude || v.lng;
-              
-              return lat && lng && (
-                <Marker 
-                  key={v.imei} 
-                  position={[lat, lng]}
-                  icon={renderVehicleIcon(v.angle, v.status)}
-                  eventHandlers={{
-                      click: () => setSelectedVehicle(v),
-                  }}
-                >
-                  <Popup>
-                    <div className="p-2 min-w-[150px]">
-                      <p className="font-black text-dark text-sm border-b border-slate-100 pb-1 mb-2">{v.vehicle_no || 'Vehicle'}</p>
-                      <div className="space-y-1">
-                        <p className="text-[10px] flex justify-between"><span className="text-slate-400 font-bold">STATUS:</span> <span className="font-bold text-primary">{v.status || 'N/A'}</span></p>
-                        <p className="text-[10px] flex justify-between"><span className="text-slate-400 font-bold">SPEED:</span> <span className="font-bold text-primary">{v.speed || 0} km/h</span></p>
-                        <p className="text-[10px] flex justify-between"><span className="text-slate-400 font-bold">ANGLE:</span> <span className="font-bold text-primary">{v.angle || 0}°</span></p>
-                      </div>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            })}
+            {vehicles.map((v) => (
+              <VehicleMarker
+                key={v.imei}
+                vehicle={v}
+                onSelect={setSelectedVehicle}
+              />
+            ))}
 
             {/* Custom Map Controls Overlay */}
             <div className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
-                <button className="p-3 bg-white rounded-2xl shadow-xl border border-slate-200 text-slate-600 hover:text-primary transition-all hover:scale-105">
-                    <Signal className="w-5 h-5" />
-                </button>
-                <button className="p-3 bg-white rounded-2xl shadow-xl border border-slate-200 text-slate-600 hover:text-primary transition-all hover:scale-105">
-                    <Navigation className="w-5 h-5" />
-                </button>
+              <button className="p-3 bg-white rounded-2xl shadow-xl border border-slate-200 text-slate-600 hover:text-primary transition-all hover:scale-105">
+                <Signal className="w-5 h-5" />
+              </button>
+              <button className="p-3 bg-white rounded-2xl shadow-xl border border-slate-200 text-slate-600 hover:text-primary transition-all hover:scale-105">
+                <Navigation className="w-5 h-5" />
+              </button>
             </div>
           </MapContainer>
 
           {/* Selected Vehicle Floating Card */}
           {selectedVehicle && (
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[1000] w-full max-w-lg px-6">
-                <div className="bg-white rounded-[32px] shadow-2xl border border-slate-100 p-8 flex items-center gap-8 animate-in fade-in slide-in-from-bottom-8 duration-500">
-                    <div className="w-20 h-20 bg-primary/5 rounded-[24px] flex items-center justify-center text-primary shrink-0 relative">
-                        <Truck className="w-10 h-10" />
-                        {(selectedVehicle.latitude || selectedVehicle.lat) && (
-                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 border-4 border-white rounded-full" />
-                        )}
-                    </div>
-                    <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="text-2xl font-black text-dark tracking-tight">{selectedVehicle.vehicle_no || 'Vehicle Details'}</h3>
-                              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">IMEI: {selectedVehicle.imei}</p>
-                            </div>
-                            <button 
-                                onClick={() => setSelectedVehicle(null)}
-                                className="text-slate-300 hover:text-dark transition-colors p-1"
-                            >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                            </button>
-                        </div>
-                        {(selectedVehicle.latitude || selectedVehicle.lat) ? (
-                            <div className="grid grid-cols-3 gap-4 mt-6">
-                                <div className="bg-slate-50 p-3 rounded-2xl text-center">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 font-black mb-1">Speed</p>
-                                    <p className="text-sm font-black text-primary">{selectedVehicle.speed || 0} <span className="text-[8px]">km/h</span></p>
-                                </div>
-                                <div className="bg-slate-50 p-3 rounded-2xl text-center">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 font-black mb-1">Power</p>
-                                    <p className="text-sm font-black text-primary">{selectedVehicle.voltage || 0} <span className="text-[8px]">V</span></p>
-                                </div>
-                                <div className="bg-slate-50 p-3 rounded-2xl text-center">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 font-black mb-1">Angle</p>
-                                    <p className="text-sm font-black text-primary">{selectedVehicle.angle || 0}°</p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="mt-6 p-4 bg-slate-50 rounded-2xl text-center text-slate-500 text-sm font-medium">
-                                No live telemetry data available yet for this asset.
-                            </div>
-                        )}
-                    </div>
+              <div className="bg-white rounded-[32px] shadow-2xl border border-slate-100 p-8 flex items-center gap-8 animate-in fade-in slide-in-from-bottom-8 duration-500">
+                <div className="w-20 h-20 bg-primary/5 rounded-[24px] flex items-center justify-center text-primary shrink-0 relative">
+                  <Truck className="w-10 h-10" />
+                  {(selectedVehicle.latitude || selectedVehicle.lat) && (
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 border-4 border-white rounded-full" />
+                  )}
                 </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-2xl font-black text-dark tracking-tight">{selectedVehicle.vehicle_no || 'Vehicle Details'}</h3>
+                      <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">IMEI: {selectedVehicle.imei}</p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedVehicle(null)}
+                      className="text-slate-300 hover:text-dark transition-colors p-1"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                    </button>
+                  </div>
+                  {(selectedVehicle.latitude || selectedVehicle.lat) ? (
+                    <div className="grid grid-cols-3 gap-4 mt-6">
+                      <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-black mb-1">Speed</p>
+                        <p className="text-sm font-black text-primary">{selectedVehicle.speed || 0} <span className="text-[8px]">km/h</span></p>
+                      </div>
+                      <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-black mb-1">Power</p>
+                        <p className="text-sm font-black text-primary">{selectedVehicle.voltage || 0} <span className="text-[8px]">V</span></p>
+                      </div>
+                      <div className="bg-slate-50 p-3 rounded-2xl text-center">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-black mb-1">Angle</p>
+                        <p className="text-sm font-black text-primary">{selectedVehicle.angle || 0}°</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-6 p-4 bg-slate-50 rounded-2xl text-center text-slate-500 text-sm font-medium">
+                      No live telemetry data available yet for this asset.
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
