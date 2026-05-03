@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Map, 
-  Settings, 
-  LogOut, 
-  Bell, 
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Map,
+  Settings,
+  LogOut,
+  Bell,
   Search,
   User,
   ChevronRight,
@@ -14,6 +14,7 @@ import {
 
 const Layout = ({ children, hideSidebar = false }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
@@ -22,6 +23,12 @@ const Layout = ({ children, hideSidebar = false }) => {
   ];
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-dark overflow-hidden">
@@ -41,11 +48,10 @@ const Layout = ({ children, hideSidebar = false }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all group ${
-                  isActive(item.path)
-                    ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-primary'
-                }`}
+                className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all group ${isActive(item.path)
+                  ? 'bg-primary text-white shadow-lg shadow-primary/25'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-primary'
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <span className={`${isActive(item.path) ? 'text-white' : 'text-slate-400 group-hover:text-primary'}`}>
@@ -59,7 +65,10 @@ const Layout = ({ children, hideSidebar = false }) => {
           </nav>
 
           <div className="p-6 mt-auto border-t border-slate-50">
-            <button className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all font-bold text-sm">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all font-bold text-sm"
+            >
               <LogOut size={20} />
               Sign Out
             </button>
@@ -74,17 +83,17 @@ const Layout = ({ children, hideSidebar = false }) => {
           <div className="flex items-center gap-4 flex-1">
             {hideSidebar && (
               <div className="mr-4">
-                 <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
-                    <span className="text-primary">BDPH</span>
-                    <span className="text-slate-400 font-light text-lg">PRO</span>
+                <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
+                  <span className="text-primary">BDPH</span>
+                  <span className="text-slate-400 font-light text-lg">PRO</span>
                 </h1>
               </div>
             )}
             <div className="relative max-w-md w-full hidden md:block">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input 
-                type="text" 
-                placeholder="Search assets, reports..." 
+              <input
+                type="text"
+                placeholder="Search assets, reports..."
                 className="w-full bg-slate-50 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
