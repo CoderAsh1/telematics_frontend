@@ -9,7 +9,9 @@ import {
   Search,
   User,
   ChevronRight,
-  Menu
+  Menu,
+  Truck,
+  SettingsIcon
 } from 'lucide-react';
 
 const Layout = ({ children, hideSidebar = false }) => {
@@ -19,7 +21,8 @@ const Layout = ({ children, hideSidebar = false }) => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Live Tracker', path: '/live-tracker', icon: <Map size={20} /> },
-    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
+    { name: 'Vehicles', path: '/vehicles', icon: <Truck size={20} /> },
+    { name: 'Settings', path: '/settings', icon: <SettingsIcon size={20} /> },
   ];
 
   const isActive = (path) => location.pathname === path;

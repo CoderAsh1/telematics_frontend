@@ -3,135 +3,108 @@
 @theme {
   --color-primary: #C5A028;
   --color-primary-foreground: #FFFFFF;
-  --color-secondary: #94A3B8;
-  --color-secondary-foreground: #1A1A1A;
-  --color-dark: #1A1A1A;
+  --color-secondary: #1A1C1E;
+  --color-secondary-foreground: #F8FAFC;
+  --color-dark: #0F172A;
   --color-accent: #D4AF37;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
 
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  
+  --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
 @layer base {
   body {
-    @apply bg-white text-dark antialiased;
+    @apply bg-slate-50 text-dark antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
 @utility glass-panel {
-  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-glass;
 }
 
 @utility input-field {
-  @apply w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200;
+  @apply w-full px-5 py-3.5 rounded-2xl bg-white border border-slate-100 text-sm font-medium transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/30 placeholder:text-slate-400;
 }
 
 @utility btn-primary {
-  @apply w-full bg-primary text-white font-semibold py-3 px-4 rounded-lg hover:bg-accent transition-all duration-200 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply w-full bg-primary text-white font-bold py-4 px-6 rounded-2xl hover:bg-accent active:scale-[0.98] transition-all duration-300 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm uppercase tracking-widest;
 }
 
 @utility btn-secondary {
-  @apply w-full bg-white text-dark border border-slate-200 font-semibold py-3 px-4 rounded-lg hover:bg-slate-50 transition-all duration-200;
+  @apply w-full bg-white text-dark border border-slate-200 font-bold py-4 px-6 rounded-2xl hover:bg-slate-50 active:scale-[0.98] transition-all duration-300 text-sm uppercase tracking-widest flex items-center justify-center gap-2;
 }
 
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-4px);
-  }
-
-  75% {
-    transform: translateX(4px);
-  }
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
 }
-
-.animate-shake {
-  animation: shake 0.2s ease-in-out 0s 2;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
 
 /* Custom Leaflet Marker Styles */
 .custom-marker {
-  background: transparent;
-  border: none;
-  transition: all 0.7s ease-out;
-  /* Fast, responsive movement */
+  background: transparent !important;
+  border: none !important;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 500 !important;
 }
 
 .marker-wrapper {
-  width: 40px;
-  height: 40px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.marker-direction {
+.icon-only {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 45px;
+  height: 45px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.marker-direction .circle {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-}
-
-.marker-direction .inner-dot {
-  width: 6px;
-  height: 6px;
-  background-color: white;
-  border-radius: 50%;
-}
-
-.marker-direction .beak {
-  position: absolute;
-  top: -6px;
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 12px solid black;
-  /* Color will be overridden by inline style */
-  z-index: 1;
-}
-
-/* Pulsing effect for active movement */
-.marker-direction.moving .circle::after {
+.icon-only.moving::after {
   content: '';
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  background: inherit;
-  opacity: 0.5;
+  background: var(--color-primary);
+  opacity: 0.2;
   animation: marker-pulse 2s infinite;
   z-index: -1;
 }
 
+/* Pulse handled in .icon-only.moving::after */
 @keyframes marker-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(2.8); opacity: 0; }
 }
+
+/* Animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }

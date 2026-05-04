@@ -4,6 +4,8 @@ import Signup from './pages/Signup';
 import VerifyEmail from './pages/VerifyEmail';
 import Dashboard from './pages/Dashboard';
 import LiveTracker from './pages/LiveTracker';
+import Vehicles from './pages/Vehicles';
+import Settings from './pages/Settings';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -26,6 +28,22 @@ function App() {
           element={
             <ProtectedRoute>
               <LiveTracker />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vehicles"
+          element={
+            <ProtectedRoute>
+              <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           }
         />
