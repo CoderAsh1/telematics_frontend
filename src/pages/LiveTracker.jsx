@@ -122,10 +122,11 @@ const LiveTracker = () => {
       reconnectionAttempts: 5
     });
 
-    socket.on('connect', () => setIsConnected(true));
-    socket.on('disconnect', () => setIsConnected(false));
+    socket.on('connect', () => { setIsConnected(true), console.log("Socket connected") });
+    socket.on('disconnect', () => { setIsConnected(false), console.log("Socket disconnected") });
 
     socket.on('v1_live_update', (data) => {
+      console.log(data, "new data from socket")
       setVehicles((prev) => {
         const index = prev.findIndex((v) =>
           (data.vehicle_id && Number(v.vehicle_id) === Number(data.vehicle_id)) ||
@@ -198,8 +199,8 @@ const LiveTracker = () => {
                   key={vehicle.vehicle_id}
                   onClick={() => setSelectedVehicle(vehicle)}
                   className={`w-full p-4 rounded-3xl text-left transition-all duration-300 group ${selectedVehicle?.vehicle_id === vehicle.vehicle_id
-                      ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                      : 'hover:bg-slate-50 bg-white border border-slate-50 hover:border-slate-100'
+                    ? 'bg-primary text-white shadow-lg shadow-primary/25'
+                    : 'hover:bg-slate-50 bg-white border border-slate-50 hover:border-slate-100'
                     }`}
                 >
                   <div className="flex justify-between items-start mb-3">
