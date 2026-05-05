@@ -113,6 +113,11 @@ const LiveTracker = () => {
     fetchVehicles();
   }, []);
 
+  const selectedVehicleRef = useRef(null);
+  useEffect(() => {
+    selectedVehicleRef.current = selectedVehicle;
+  }, [selectedVehicle]);
+
   // Socket Connection
   useEffect(() => {
     const socket = io("https://tracker.bdph.in", {
@@ -122,11 +127,27 @@ const LiveTracker = () => {
       reconnectionAttempts: 5
     });
 
-    socket.on('connect', () => { setIsConnected(true), console.log("Socket connected") });
-    socket.on('disconnect', () => { setIsConnected(false), console.log("Socket disconnected") });
+    socket.on('connect', () => { 
+      setIsConnected(true);
+      console.log("✅ Socket connected:", socket.id);
+    });
+
+    socket.on('disconnect', (reason) => { 
+      setIsConnected(false);
+      console.log("❌ Socket disconnected. Reason:", reason);
+      if (reason === "io server disconnect") {
+        // The server forcibly closed the connection, try reconnecting manually
+        socket.connect();
+      }
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error("⚠️ Connection Error:", error.message);
+    });
 
     socket.on('v1_live_update', (data) => {
-      console.log(data, "new data from socket")
+      console.log("📡 New data from socket:", data);
+      
       setVehicles((prev) => {
         const index = prev.findIndex((v) =>
           (data.vehicle_id && Number(v.vehicle_id) === Number(data.vehicle_id)) ||
@@ -135,15 +156,17 @@ const LiveTracker = () => {
 
         if (index !== -1) {
           const updated = [...prev];
-          updated[index] = {
+          const updatedVehicle = {
             ...updated[index],
             ...data,
             latitude: data.lat || data.latitude || updated[index].latitude,
             longitude: data.lng || data.longitude || updated[index].longitude
           };
+          updated[index] = updatedVehicle;
 
-          if (selectedVehicle && selectedVehicle.vehicle_id === updated[index].vehicle_id) {
-            setSelectedVehicle(updated[index]);
+          // Update selected vehicle if it's the one being updated
+          if (selectedVehicleRef.current && selectedVehicleRef.current.vehicle_id === updatedVehicle.vehicle_id) {
+            setSelectedVehicle(updatedVehicle);
           }
           return updated;
         }
@@ -151,8 +174,11 @@ const LiveTracker = () => {
       });
     });
 
-    return () => socket.disconnect();
-  }, [selectedVehicle]);
+    return () => {
+      console.log("🔌 Cleaning up socket connection...");
+      socket.disconnect();
+    };
+  }, []); // Empty dependency array ensures socket connects only once
 
   const filteredVehicles = useMemo(() =>
     vehicles.filter(v =>
