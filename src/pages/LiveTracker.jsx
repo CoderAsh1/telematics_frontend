@@ -4,8 +4,8 @@ import L from 'leaflet';
 import { io } from 'socket.io-client';
 import Layout from '../components/Layout';
 import 'leaflet/dist/leaflet.css';
-import { 
-  Truck, Navigation, Signal, Activity, Wifi, WifiOff, 
+import {
+  Truck, Navigation, Signal, Activity, Wifi, WifiOff,
   Gauge, Battery, Search, ChevronRight, Filter, Map as MapIcon,
   Circle, MoreVertical, Layers, Compass
 } from 'lucide-react';
@@ -37,10 +37,10 @@ const renderVehicleIcon = (angle = 0, status = 'Moving', speed = 0, currentIcon 
     html: `
       <div class="marker-wrapper">
         <div class="icon-only ${isMoving ? 'moving' : ''}" style="transform: rotate(${angle}deg); display: flex; align-items: center; justify-content: center;">
-          ${currentIcon ? 
-            `<img src="${currentIcon}" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />` : 
-            `<div class="fallback-dot" style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`
-          }
+          ${currentIcon ?
+        `<img src="${currentIcon}" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />` :
+        `<div class="fallback-dot" style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`
+      }
         </div>
       </div>
     `,
@@ -115,7 +115,7 @@ const LiveTracker = () => {
 
   // Socket Connection
   useEffect(() => {
-    const socket = io(SOCKET_URL, {
+    const socket = io("https://tracker.bdph.in", {
       transports: ["websocket"],
       secure: true,
       reconnection: true,
@@ -127,20 +127,20 @@ const LiveTracker = () => {
 
     socket.on('v1_live_update', (data) => {
       setVehicles((prev) => {
-        const index = prev.findIndex((v) => 
+        const index = prev.findIndex((v) =>
           (data.vehicle_id && Number(v.vehicle_id) === Number(data.vehicle_id)) ||
           (data.vehicle_no && v.vehicle_no === data.vehicle_no)
         );
 
         if (index !== -1) {
           const updated = [...prev];
-          updated[index] = { 
-            ...updated[index], 
+          updated[index] = {
+            ...updated[index],
             ...data,
             latitude: data.lat || data.latitude || updated[index].latitude,
             longitude: data.lng || data.longitude || updated[index].longitude
           };
-          
+
           if (selectedVehicle && selectedVehicle.vehicle_id === updated[index].vehicle_id) {
             setSelectedVehicle(updated[index]);
           }
@@ -153,8 +153,8 @@ const LiveTracker = () => {
     return () => socket.disconnect();
   }, [selectedVehicle]);
 
-  const filteredVehicles = useMemo(() => 
-    vehicles.filter(v => 
+  const filteredVehicles = useMemo(() =>
+    vehicles.filter(v =>
       v.vehicle_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       v.imei?.includes(searchQuery)
     ),
@@ -174,12 +174,12 @@ const LiveTracker = () => {
                 {isConnected ? 'Live' : 'Offline'}
               </div>
             </div>
-            
+
             <div className="relative group">
               <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Search assets..." 
+              <input
+                type="text"
+                placeholder="Search assets..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-slate-50 border-none rounded-2xl py-3 pl-12 pr-4 text-sm font-medium focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-300"
@@ -197,11 +197,10 @@ const LiveTracker = () => {
                 <button
                   key={vehicle.vehicle_id}
                   onClick={() => setSelectedVehicle(vehicle)}
-                  className={`w-full p-4 rounded-3xl text-left transition-all duration-300 group ${
-                    selectedVehicle?.vehicle_id === vehicle.vehicle_id
+                  className={`w-full p-4 rounded-3xl text-left transition-all duration-300 group ${selectedVehicle?.vehicle_id === vehicle.vehicle_id
                       ? 'bg-primary text-white shadow-lg shadow-primary/25'
                       : 'hover:bg-slate-50 bg-white border border-slate-50 hover:border-slate-100'
-                  }`}
+                    }`}
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="space-y-0.5">
@@ -259,10 +258,10 @@ const LiveTracker = () => {
               attribution="&copy; Google Maps"
             />
             {vehicles.map((v) => (
-              <VehicleMarker 
-                key={v.vehicle_id} 
-                vehicle={v} 
-                onSelect={setSelectedVehicle} 
+              <VehicleMarker
+                key={v.vehicle_id}
+                vehicle={v}
+                onSelect={setSelectedVehicle}
               />
             ))}
             <MapController selectedVehicle={selectedVehicle} />
@@ -300,7 +299,7 @@ const LiveTracker = () => {
                       ID: {selectedVehicle.vehicle_id}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
                       <Gauge size={16} className="text-primary" />
