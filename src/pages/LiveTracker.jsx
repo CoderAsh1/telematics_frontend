@@ -1,15 +1,22 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { io } from 'socket.io-client';
-import Layout from '../components/Layout';
 import 'leaflet/dist/leaflet.css';
 import {
-  Truck, Navigation, Signal, Activity, Wifi, WifiOff,
-  Gauge, Battery, Search, ChevronRight, Filter, Map as MapIcon,
-  Circle, MoreVertical, Layers, Compass
+  Battery,
+  Compass,
+  Filter,
+  Gauge,
+  Layers,
+  MoreVertical,
+  Navigation,
+  Search,
+  Truck,
+  X
 } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
+import { io } from 'socket.io-client';
 import api from '../api/api';
+import Layout from '../components/Layout';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "wss://tracker.bdph.in";
 
@@ -127,12 +134,12 @@ const LiveTracker = () => {
       reconnectionAttempts: 5
     });
 
-    socket.on('connect', () => { 
+    socket.on('connect', () => {
       setIsConnected(true);
       console.log("✅ Socket connected:", socket.id);
     });
 
-    socket.on('disconnect', (reason) => { 
+    socket.on('disconnect', (reason) => {
       setIsConnected(false);
       console.log("❌ Socket disconnected. Reason:", reason);
       if (reason === "io server disconnect") {
@@ -147,7 +154,7 @@ const LiveTracker = () => {
 
     socket.on('v1_live_update', (data) => {
       console.log("📡 New data from socket:", data);
-      
+
       setVehicles((prev) => {
         const index = prev.findIndex((v) =>
           (data.vehicle_id && Number(v.vehicle_id) === Number(data.vehicle_id)) ||
@@ -232,7 +239,7 @@ const LiveTracker = () => {
                   <div className={`p-1.5 rounded-md shrink-0 ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'bg-white/20' : 'bg-slate-50 text-slate-400'}`}>
                     <Navigation size={14} style={{ transform: `rotate(${vehicle.angle || 0}deg)` }} />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <p className={`text-[11px] font-black uppercase tracking-wider truncate ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white' : 'text-dark'}`}>
                       {vehicle.vehicle_no}
@@ -243,7 +250,7 @@ const LiveTracker = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-success' : 'bg-slate-300'}`} />
                 </button>
               ))
