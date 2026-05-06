@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { 
-  Plus, Search, Edit2, Trash2, Truck, Save, X, Info
+  Plus, Search, Edit2, Trash2, Truck, Save, X
 } from 'lucide-react';
 import * as vehicleApi from '../api/vehicles';
 
@@ -81,74 +81,74 @@ const Vehicles = () => {
   return (
     <Layout>
       <div className="flex flex-col h-full bg-slate-50">
-        <div className="bg-white border-b border-slate-100 p-8">
-          <div className="max-w-7xl mx-auto flex justify-between items-end">
-            <div className="space-y-1">
-              <h1 className="text-4xl font-black text-dark tracking-tighter">Fleet Management.</h1>
-              <p className="text-slate-400 font-medium">Add, update, or remove assets from your logistics network.</p>
+        <div className="bg-white border-b border-slate-200 p-4">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-black text-dark tracking-tight">Fleet Assets</h1>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Manage your logistics network</p>
             </div>
             <button 
               onClick={() => handleOpenModal()}
-              className="btn-primary !w-auto px-8"
+              className="btn-primary !w-auto px-4 py-1.5"
             >
-              <Plus size={18} />
-              Add Vehicle
+              <Plus size={16} />
+              Add Asset
             </button>
           </div>
         </div>
 
-        <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <div className="max-w-md relative group">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
+        <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+          <div className="max-w-7xl mx-auto space-y-4">
+            <div className="max-w-xs relative group">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
               <input 
                 type="text" 
-                placeholder="Search by Vehicle No or IMEI..." 
+                placeholder="Search vehicles..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border-none rounded-2xl py-3 pl-12 pr-4 text-sm font-bold shadow-sm focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-300"
+                className="w-full bg-white border border-slate-200 rounded-md py-1.5 pl-9 pr-3 text-xs font-medium shadow-sm focus:ring-2 focus:ring-primary/10 transition-all"
               />
             </div>
 
-            <div className="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-premium">
+            <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-sm">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-slate-50/50">
-                    <th className="text-left px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Vehicle Info</th>
-                    <th className="text-left px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">IMEI</th>
-                    <th className="text-left px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Type</th>
-                    <th className="text-right px-8 py-5 text-[10px] font-black uppercase tracking-widest text-slate-400">Actions</th>
+                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                    <th className="text-left px-4 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Vehicle</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">IMEI</th>
+                    <th className="text-left px-4 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Type</th>
+                    <th className="text-right px-4 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {isLoading ? (
-                    [1,2,3].map(i => <tr key={i} className="h-20 animate-pulse bg-white"></tr>)
+                    [1,2,3].map(i => <tr key={i} className="h-12 animate-pulse bg-white"></tr>)
                   ) : filteredVehicles.map((v) => (
-                    <tr key={v.id} className="hover:bg-slate-50/50 transition-colors group">
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                            <Truck size={22} />
+                    <tr key={v.id} className="hover:bg-slate-50/30 transition-colors group">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-slate-50 rounded-md flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+                            <Truck size={16} />
                           </div>
                           <div>
-                            <p className="text-sm font-black text-dark tracking-tight uppercase">{v.vehicle_no}</p>
-                            <p className="text-[11px] text-slate-400 font-bold uppercase">{v.model || 'Standard'}</p>
+                            <p className="text-xs font-black text-dark tracking-tight uppercase">{v.vehicle_no}</p>
+                            <p className="text-[9px] text-slate-400 font-bold uppercase">{v.model || 'Standard'}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6 text-sm font-black text-slate-500 tracking-tight font-mono">{v.imei}</td>
-                      <td className="px-8 py-6">
-                        <span className="px-3 py-1 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-lg">
+                      <td className="px-4 py-3 text-xs font-bold text-slate-500 font-mono tracking-tight">{v.imei}</td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest rounded-md">
                           {v.vehicle_type_name || 'Standard'}
                         </span>
                       </td>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => handleOpenModal(v)} className="p-2.5 text-slate-300 hover:text-primary rounded-xl transition-all">
-                            <Edit2 size={16} />
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => handleOpenModal(v)} className="p-1.5 text-slate-300 hover:text-primary hover:bg-white rounded-md transition-all">
+                            <Edit2 size={14} />
                           </button>
-                          <button onClick={() => handleDelete(v.id)} className="p-2.5 text-slate-300 hover:text-red-500 rounded-xl transition-all">
-                            <Trash2 size={16} />
+                          <button onClick={() => handleDelete(v.id)} className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-white rounded-md transition-all">
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       </td>

@@ -17,4 +17,28 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Add response interceptor to handle token expiration
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const { status, data } = error.response;
+      // Handle "Token has expired" message specifically or any 401 when a token is present
+      const isExpired = data?.message === 'Token has expired.';
+      const isUnauthorized = status === 401 && localStorage.getItem('token');
+
+      if (isExpired || isUnauthorized) {
+        console.warn('🔑 Session expired or unauthorized, logging out...');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Only redirect if we're not already on the login page to avoid loops
+        if (window.location.pathname !== '/') {
+          window.location.href = '/';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

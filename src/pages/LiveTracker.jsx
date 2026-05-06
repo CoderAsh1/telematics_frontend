@@ -189,83 +189,67 @@ const LiveTracker = () => {
   );
 
   return (
-    <Layout hideSidebar={false}>
+    <Layout hideSidebar={true}>
       <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-slate-50 relative">
-        {/* Left Sidebar: Minimalist Fleet List */}
-        <div className="w-96 flex flex-col bg-white border-r border-slate-100 z-10 shadow-premium">
-          <div className="p-6 border-b border-slate-50 space-y-4">
+        {/* Left Overlay: Minimalist Fleet List */}
+        <div className="absolute top-4 left-4 bottom-4 w-72 flex flex-col bg-white border border-slate-200 z-10 shadow-lg rounded-md overflow-hidden">
+          <div className="p-3 border-b border-slate-100 space-y-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black text-dark tracking-tighter">My Fleet</h2>
-              <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${isConnected ? 'bg-success/10 text-success' : 'bg-slate-100 text-slate-400'}`}>
-                <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-success animate-pulse' : 'bg-slate-300'}`} />
-                {isConnected ? 'Live' : 'Offline'}
+              <h2 className="text-sm font-black text-dark tracking-tight">Fleet Assets</h2>
+              <div className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest ${isConnected ? 'bg-success/10 text-success' : 'bg-slate-100 text-slate-400'}`}>
+                <div className={`w-1 h-1 rounded-full ${isConnected ? 'bg-success' : 'bg-slate-300'}`} />
+                {isConnected ? 'Live' : 'Off'}
               </div>
             </div>
 
             <div className="relative group">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
-                placeholder="Search assets..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border-none rounded-2xl py-3 pl-12 pr-4 text-sm font-medium focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-300"
+                className="w-full bg-slate-50 border border-slate-100 rounded-md py-1.5 pl-9 pr-3 text-xs font-medium focus:ring-2 focus:ring-primary/10 transition-all placeholder:text-slate-300"
               />
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
             {isLoading ? (
-              [1, 2, 3].map(i => (
-                <div key={i} className="h-24 bg-slate-50 rounded-3xl animate-pulse" />
+              [1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="h-12 bg-slate-50 rounded-md animate-pulse" />
               ))
             ) : filteredVehicles.length > 0 ? (
               filteredVehicles.map((vehicle) => (
                 <button
                   key={vehicle.vehicle_id}
                   onClick={() => setSelectedVehicle(vehicle)}
-                  className={`w-full p-4 rounded-3xl text-left transition-all duration-300 group ${selectedVehicle?.vehicle_id === vehicle.vehicle_id
-                    ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                    : 'hover:bg-slate-50 bg-white border border-slate-50 hover:border-slate-100'
+                  className={`w-full p-2.5 rounded-md text-left transition-all duration-200 group flex items-center gap-3 ${selectedVehicle?.vehicle_id === vehicle.vehicle_id
+                    ? 'bg-primary text-white shadow-md'
+                    : 'hover:bg-slate-50 bg-white border border-transparent hover:border-slate-100'
                     }`}
                 >
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="space-y-0.5">
-                      <p className={`text-sm font-black uppercase tracking-widest ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white' : 'text-dark'}`}>
-                        {vehicle.vehicle_no}
-                      </p>
-                      <p className={`text-[10px] font-bold ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white/70' : 'text-slate-400'}`}>
-                        IMEI: {vehicle.imei}
-                      </p>
-                    </div>
-                    <div className={`p-2 rounded-xl ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'bg-white/20' : 'bg-slate-50 text-slate-400 group-hover:text-primary'}`}>
-                      <Navigation size={14} style={{ transform: `rotate(${vehicle.angle || 0}deg)` }} />
-                    </div>
+                  <div className={`p-1.5 rounded-md shrink-0 ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'bg-white/20' : 'bg-slate-50 text-slate-400'}`}>
+                    <Navigation size={14} style={{ transform: `rotate(${vehicle.angle || 0}deg)` }} />
                   </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5">
-                      <Gauge size={12} className={selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white/60' : 'text-slate-300'} />
-                      <span className={`text-[11px] font-black ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white' : 'text-slate-500'}`}>
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-[11px] font-black uppercase tracking-wider truncate ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white' : 'text-dark'}`}>
+                      {vehicle.vehicle_no}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[9px] font-bold ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white/70' : 'text-slate-400'}`}>
                         {vehicle.speed || 0} km/h
                       </span>
                     </div>
-                    <div className="w-1 h-1 rounded-full bg-slate-200" />
-                    <div className="flex items-center gap-1.5">
-                      <Signal size={12} className={selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white/60' : 'text-slate-300'} />
-                      <span className={`text-[11px] font-black ${selectedVehicle?.vehicle_id === vehicle.vehicle_id ? 'text-white' : 'text-slate-500'}`}>
-                        Active
-                      </span>
-                    </div>
                   </div>
+                  
+                  <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-success' : 'bg-slate-300'}`} />
                 </button>
               ))
             ) : (
-              <div className="py-12 text-center space-y-4">
-                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto text-slate-300">
-                  <Truck size={24} />
-                </div>
-                <p className="text-sm font-bold text-slate-400 tracking-tight">No assets found</p>
+              <div className="py-8 text-center">
+                <p className="text-[10px] font-bold text-slate-400 tracking-tight">No assets found</p>
               </div>
             )}
           </div>
@@ -295,60 +279,61 @@ const LiveTracker = () => {
           </MapContainer>
 
           {/* Floating Controls */}
-          <div className="absolute top-6 right-6 z-20 flex flex-col gap-3">
-            <button className="p-3 bg-white rounded-2xl shadow-premium text-slate-400 hover:text-primary transition-all hover:scale-110 active:scale-95">
-              <Layers size={20} />
+          <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+            <button className="p-2 bg-white rounded-md shadow-md text-slate-500 hover:text-primary transition-all border border-slate-100">
+              <Layers size={18} />
             </button>
-            <button className="p-3 bg-white rounded-2xl shadow-premium text-slate-400 hover:text-primary transition-all hover:scale-110 active:scale-95">
-              <Filter size={20} />
+            <button className="p-2 bg-white rounded-md shadow-md text-slate-500 hover:text-primary transition-all border border-slate-100">
+              <Filter size={18} />
             </button>
-            <div className="w-px h-4 bg-slate-200 mx-auto" />
-            <button className="p-3 bg-primary text-white rounded-2xl shadow-lg shadow-primary/30 transition-all hover:scale-110 active:scale-95">
-              <Compass size={20} />
+            <button className="p-2 bg-primary text-white rounded-md shadow-md transition-all">
+              <Compass size={18} />
             </button>
           </div>
 
-          {/* Selected Vehicle Overlay (Glass Effect) */}
+          {/* Selected Vehicle Overlay (Compact) */}
           {selectedVehicle && (
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-20">
-              <div className="glass-panel p-8 rounded-[40px] flex items-center gap-8 animate-in slide-in-from-bottom-8 duration-700">
-                <div className="w-20 h-20 bg-primary/10 rounded-[32px] flex items-center justify-center text-primary relative">
-                  <Truck size={36} />
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-success rounded-xl border-4 border-white flex items-center justify-center">
-                    <Wifi size={14} className="text-white" />
-                  </div>
-                </div>
-
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-dark tracking-tighter uppercase">{selectedVehicle.vehicle_no}</h3>
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                      ID: {selectedVehicle.vehicle_id}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
-                      <Gauge size={16} className="text-primary" />
-                      <span className="text-sm font-black text-dark tracking-tight">{selectedVehicle.speed || 0} km/h</span>
+            <div className="absolute bottom-4 right-4 z-20 w-80">
+              <div className="bg-white border border-slate-200 p-4 rounded-md shadow-xl animate-in slide-in-from-right-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center text-primary">
+                      <Truck size={20} />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Battery size={16} className="text-success" />
-                      <span className="text-sm font-black text-dark tracking-tight">{selectedVehicle.voltage || '0.00'}V</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Activity size={16} className="text-slate-400" />
-                      <span className="text-sm font-black text-dark tracking-tight">Active</span>
+                    <div>
+                      <h3 className="text-sm font-black text-dark tracking-tight uppercase">{selectedVehicle.vehicle_no}</h3>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ID: {selectedVehicle.vehicle_id}</p>
                     </div>
                   </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <button className="p-3 bg-dark text-white rounded-2xl hover:bg-black transition-all shadow-lg shadow-dark/20">
-                    <Navigation size={20} />
+                  <button onClick={() => setSelectedVehicle(null)} className="p-1 text-slate-400 hover:text-dark">
+                    <X size={16} />
                   </button>
-                  <button className="p-3 bg-white text-slate-400 hover:text-dark rounded-2xl border border-slate-100 transition-all">
-                    <MoreVertical size={20} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <div className="bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Speed</p>
+                    <div className="flex items-center gap-1.5 text-primary">
+                      <Gauge size={12} />
+                      <span className="text-xs font-black text-dark">{selectedVehicle.speed || 0} km/h</span>
+                    </div>
+                  </div>
+                  <div className="bg-slate-50 p-2 rounded-md border border-slate-100">
+                    <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Voltage</p>
+                    <div className="flex items-center gap-1.5 text-success">
+                      <Battery size={12} />
+                      <span className="text-xs font-black text-dark">{selectedVehicle.voltage || '0.00'}V</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button className="flex-1 bg-dark text-white py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2">
+                    <Navigation size={12} />
+                    Locate
+                  </button>
+                  <button className="p-1.5 bg-white text-slate-400 border border-slate-200 rounded-md hover:text-dark">
+                    <MoreVertical size={14} />
                   </button>
                 </div>
               </div>

@@ -125,51 +125,49 @@ const Settings = () => {
   return (
     <Layout>
       <div className="flex flex-col h-full bg-slate-50">
-        <div className="bg-white border-b border-slate-100 p-8 pt-10">
-          <div className="max-w-7xl mx-auto flex justify-between items-end">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary mb-2">
-                <SettingsIcon size={12} />
-                Global Configuration
-              </div>
-              <h1 className="text-4xl font-black text-dark tracking-tighter">System Setup.</h1>
-              <p className="text-slate-400 font-medium">Manage vehicle categories and their visual representations.</p>
+        <div className="bg-white border-b border-slate-200 p-4">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-black text-dark tracking-tight">System Settings</h1>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Global configuration & mapping</p>
             </div>
-            <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-8">
-              <Plus size={18} />
-              Add New Type
+            <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-4 py-1.5">
+              <Plus size={16} />
+              Add Type
             </button>
           </div>
         </div>
 
-        <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {isLoading ? (
-                [1,2,3].map(i => <div key={i} className="h-64 bg-white rounded-[40px] animate-pulse" />)
+                [1,2,3,4].map(i => <div key={i} className="h-40 bg-white rounded-md animate-pulse border border-slate-200" />)
               ) : types.map((type) => (
-                <div key={type.id} className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-premium group">
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="w-16 h-16 bg-primary/10 rounded-[24px] flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                      <Truck size={32} />
+                <div key={type.id} className="bg-white p-4 rounded-md border border-slate-200 shadow-sm group">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="w-10 h-10 bg-slate-50 rounded-md flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+                      <Truck size={20} />
                     </div>
-                    <button onClick={() => handleOpenModal(type)} className="p-2.5 text-slate-300 hover:text-primary bg-slate-50 rounded-xl">
+                    <button onClick={() => handleOpenModal(type)} className="p-1.5 text-slate-300 hover:text-primary hover:bg-slate-50 rounded-md transition-all">
                       <Edit2 size={14} />
                     </button>
                   </div>
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-black text-dark tracking-tighter uppercase">{type.name}</h3>
-                    <p className="text-sm text-slate-400 font-medium line-clamp-2">{type.description || 'No description provided.'}</p>
-                    <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                        <Activity size={12} className="text-success" />
-                        Mapped Statuses
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="text-sm font-black text-dark tracking-tight uppercase">{type.name}</h3>
+                      <p className="text-[11px] text-slate-400 font-medium line-clamp-1">{type.description || 'No description.'}</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-50 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                        <Activity size={10} className="text-success" />
+                        Assets
                       </div>
                       <button 
                         onClick={() => handleOpenIconModal(type)}
-                        className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-1 hover:gap-2 transition-all"
+                        className="text-[9px] font-black uppercase tracking-widest text-primary hover:underline"
                       >
-                        Manage Icons <ChevronRight size={12} />
+                        Icons
                       </button>
                     </div>
                   </div>
@@ -181,22 +179,22 @@ const Settings = () => {
 
         {/* Type Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-dark/60 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-white w-full max-w-xl rounded-[48px] p-10 animate-in zoom-in-95">
-              <div className="flex justify-between items-center mb-10">
-                <h2 className="text-2xl font-black text-dark tracking-tighter">{selectedType ? 'Edit' : 'Add'} Vehicle Type</h2>
-                <button onClick={() => setIsModalOpen(false)} className="p-3 bg-slate-50 text-slate-400 rounded-2xl"><X size={20} /></button>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/40 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-md rounded-md p-6 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-lg font-black text-dark tracking-tight">{selectedType ? 'Edit' : 'Add'} Type</h2>
+                <button onClick={() => setIsModalOpen(false)} className="p-1 text-slate-400 hover:text-dark"><X size={20} /></button>
               </div>
-              <form onSubmit={handleTypeSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Name</label>
+              <form onSubmit={handleTypeSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Name</label>
                   <input type="text" className="input-field" value={typeFormData.name} onChange={e => setTypeFormData({...typeFormData, name: e.target.value})} required />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
-                  <textarea className="input-field h-32 resize-none" value={typeFormData.description} onChange={e => setTypeFormData({...typeFormData, description: e.target.value})} />
+                <div className="space-y-1">
+                  <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
+                  <textarea className="input-field h-24 resize-none" value={typeFormData.description} onChange={e => setTypeFormData({...typeFormData, description: e.target.value})} />
                 </div>
-                <button type="submit" className="btn-primary"><Save size={18} /> {selectedType ? 'Update' : 'Create'} Type</button>
+                <button type="submit" className="btn-primary mt-2">Save Type</button>
               </form>
             </div>
           </div>
@@ -204,31 +202,40 @@ const Settings = () => {
 
         {/* Icon Management Modal */}
         {isIconModalOpen && selectedType && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-dark/60 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-white w-full max-w-2xl rounded-[48px] p-10 animate-in zoom-in-95">
-              <div className="flex justify-between items-center mb-10">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/40 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-xl rounded-md p-6 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h2 className="text-2xl font-black text-dark tracking-tighter">Icon Configuration.</h2>
-                  <p className="text-sm font-medium text-slate-400 uppercase tracking-widest">Type: {selectedType.name}</p>
+                  <h2 className="text-lg font-black text-dark tracking-tight">Icon Mapping</h2>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{selectedType.name}</p>
                 </div>
-                <button onClick={() => setIsIconModalOpen(false)} className="p-3 bg-slate-50 text-slate-400 rounded-2xl"><X size={20} /></button>
+                <button onClick={() => setIsIconModalOpen(false)} className="p-1 text-slate-400 hover:text-dark"><X size={20} /></button>
               </div>
               
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-3">
                 {['moving', 'idle', 'stopped', 'offline'].map(status => (
-                  <IconStatusItem 
-                    key={status} 
-                    status={status} 
-                    iconUrl={typeIcons[status]} 
-                  />
+                  <div key={status} className="p-3 bg-slate-50 rounded-md border border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {typeIcons[status] && (
+                        <div className="w-8 h-8 bg-white rounded-md border border-slate-200 p-1">
+                          <img src={typeIcons[status]} alt={status} className="w-full h-full object-contain" />
+                        </div>
+                      )}
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{status}</span>
+                    </div>
+                    
+                    <label className="p-1.5 bg-white border border-slate-200 rounded-md text-slate-400 hover:text-primary cursor-pointer">
+                      {isUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+                      <input 
+                        type="file" 
+                        className="hidden" 
+                        accept="image/*"
+                        onChange={(e) => e.target.files[0] && handleIconUpload(status, e.target.files[0])}
+                        disabled={isUploading}
+                      />
+                    </label>
+                  </div>
                 ))}
-              </div>
-
-              <div className="mt-10 p-6 bg-primary/5 rounded-[32px] border border-primary/10 flex items-start gap-4">
-                <AlertCircle className="text-primary mt-1" size={20} />
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Upload high-quality PNG or SVG icons. These will be used on the live tracker based on the vehicle's current status.
-                </p>
               </div>
             </div>
           </div>
