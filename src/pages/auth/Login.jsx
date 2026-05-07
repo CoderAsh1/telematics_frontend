@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, ShieldCheck } from 'lucide-react';
-import heroImage from '../assets/hero.png';
-import { login } from '../api/auth';
+import heroImage from '../../assets/hero.png';
+import { login } from '../../api/auth';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);

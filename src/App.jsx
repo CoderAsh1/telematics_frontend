@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import VerifyEmail from './pages/VerifyEmail';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
+import VerifyEmail from './pages/auth/VerifyEmail';
 import Dashboard from './pages/Dashboard';
-import LiveTracker from './pages/LiveTracker';
-import Vehicles from './pages/Vehicles';
+import LiveTracker from './pages/vehicle/LiveTracker';
+import Vehicles from './pages/vehicle/Vehicles';
+import VehicleDetails from './pages/vehicle/VehicleDetails';
+import Users from './pages/user/Users';
+import UserDetails from './pages/user/UserDetails';
 import Settings from './pages/Settings';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -36,6 +39,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vehicles/:id"
+          element={
+            <ProtectedRoute>
+              <VehicleDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <ProtectedRoute>
+              <UserDetails />
             </ProtectedRoute>
           }
         />

@@ -15,8 +15,8 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer, useMap } from 'react-leaflet';
 import { io } from 'socket.io-client';
-import api from '../api/api';
-import Layout from '../components/Layout';
+import api from '../../api/api';
+import Layout from '../../components/Layout';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "wss://tracker.bdph.in";
 
@@ -35,7 +35,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const INITIAL_CENTER = [24.589018806784583, 87.44980490379005];
 const INITIAL_ZOOM = 8;
 
-const renderVehicleIcon = (angle = 0, status = 'Moving', speed = 0, currentIcon = null) => {
+const renderVehicleIcon = (angle = 0, status = 'Moving', speed = 0, currentIcon = null, vehicle) => {
   const color = status === 'Moving' ? '#10b981' : '#f59e0b';
   const isMoving = speed > 0 || status === 'Moving';
 
@@ -44,10 +44,7 @@ const renderVehicleIcon = (angle = 0, status = 'Moving', speed = 0, currentIcon 
     html: `
       <div class="marker-wrapper">
         <div class="icon-only ${isMoving ? 'moving' : ''}" style="transform: rotate(${angle}deg); display: flex; align-items: center; justify-content: center;">
-          ${currentIcon ?
-        `<img src="${currentIcon}" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />` :
-        `<div class="fallback-dot" style="background-color: ${color}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>`
-      }
+          ${currentIcon ? `<img src="${currentIcon}" style="width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />` : ''}
         </div>
       </div>
     `,
@@ -83,13 +80,13 @@ const MapController = ({ selectedVehicle }) => {
 const VehicleMarker = React.memo(({ vehicle, onSelect }) => {
   const lat = vehicle.latitude || vehicle.lat;
   const lng = vehicle.longitude || vehicle.lng;
-
+  console.log(vehicle)
   if (!lat || !lng) return null;
 
   return (
     <Marker
       position={[lat, lng]}
-      icon={renderVehicleIcon(vehicle.angle, vehicle.status, vehicle.speed, vehicle.current_icon)}
+      icon={renderVehicleIcon(vehicle.angle, vehicle.status, vehicle.speed, vehicle.current_icon, vehicle)}
       eventHandlers={{
         click: () => onSelect(vehicle),
       }}
@@ -109,8 +106,8 @@ const LiveTracker = () => {
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await api.get('/vehicles/live');
-        setVehicles(response.data);
+        const response = await api.get('/vehicles/live', { params: { limit: 500 } });
+        setVehicles(response.data.data);
       } catch (err) {
         console.error('Failed to fetch initial vehicle data:', err);
       } finally {
@@ -197,7 +194,7 @@ const LiveTracker = () => {
 
   return (
     <Layout hideSidebar={true}>
-      <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-slate-50 relative">
+      <div className="flex h-full overflow-hidden bg-slate-50 relative">
         {/* Left Overlay: Minimalist Fleet List */}
         <div className="absolute top-4 left-4 bottom-4 w-72 flex flex-col bg-white border border-slate-200 z-10 shadow-lg rounded-md overflow-hidden">
           <div className="p-3 border-b border-slate-100 space-y-2">
@@ -334,7 +331,7 @@ const LiveTracker = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                {/* <div className="flex gap-2">
                   <button className="flex-1 bg-dark text-white py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2">
                     <Navigation size={12} />
                     Locate
@@ -342,7 +339,7 @@ const LiveTracker = () => {
                   <button className="p-1.5 bg-white text-slate-400 border border-slate-200 rounded-md hover:text-dark">
                     <MoreVertical size={14} />
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           )}

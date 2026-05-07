@@ -8,6 +8,7 @@ import {
   Bell,
   Search,
   User,
+  Users,
   ChevronRight,
   Menu,
   Truck,
@@ -22,6 +23,7 @@ const Layout = ({ children, hideSidebar = false }) => {
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Live Tracker', path: '/live-tracker', icon: <Map size={20} /> },
     { name: 'Vehicles', path: '/vehicles', icon: <Truck size={20} /> },
+    { name: 'Users', path: '/users', icon: <Users size={20} /> },
     { name: 'Settings', path: '/settings', icon: <SettingsIcon size={20} /> },
   ];
 
@@ -92,14 +94,6 @@ const Layout = ({ children, hideSidebar = false }) => {
                 </h1>
               </div>
             )}
-            <div className="relative max-w-xs w-full hidden md:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full bg-slate-50 border border-slate-100 rounded-md py-1.5 pl-9 pr-3 text-xs focus:ring-2 focus:ring-primary/20 transition-all"
-              />
-            </div>
           </div>
 
           <div className="flex items-center gap-4">
