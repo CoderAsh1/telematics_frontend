@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
-import { 
+import {
   ArrowLeft, Truck, Save, AlertCircle, Loader2, Info, Activity, Gauge, MapPin
 } from 'lucide-react';
 import * as vehicleApi from '../../api/vehicles';
@@ -55,7 +55,7 @@ const VehicleDetails = () => {
   const fetchTypes = async () => {
     try {
       const response = await vehicleApi.getVehicleTypes();
-      setTypes(response.data);
+      setTypes(response.data.data);
     } catch (error) {
       console.error('Error fetching types:', error);
     }
@@ -94,7 +94,7 @@ const VehicleDetails = () => {
         <div className="bg-white border-b border-slate-200 p-4 sticky top-0 z-10">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 onClick={() => navigate('/vehicles')}
                 className="p-2 bg-slate-50 text-slate-400 hover:text-primary rounded-md transition-colors"
               >
@@ -112,9 +112,8 @@ const VehicleDetails = () => {
         <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto">
             {message.text && (
-              <div className={`mb-4 p-3 rounded-md flex items-center gap-3 animate-in slide-in-from-top-2 ${
-                message.type === 'success' ? 'bg-success/10 text-success border border-success/20' : 'bg-red-50 text-red-600 border border-red-100'
-              }`}>
+              <div className={`mb-4 p-3 rounded-md flex items-center gap-3 animate-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-success/10 text-success border border-success/20' : 'bg-red-50 text-red-600 border border-red-100'
+                }`}>
                 {message.type === 'success' ? <Save size={16} /> : <AlertCircle size={16} />}
                 <p className="text-xs font-bold uppercase tracking-widest">{message.text}</p>
               </div>
@@ -129,7 +128,7 @@ const VehicleDetails = () => {
                   </div>
                   <h3 className="text-xl font-black text-dark tracking-tight uppercase mb-1">{vehicle?.vehicle_no}</h3>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Device IMEI: {vehicle?.imei}</p>
-                  
+
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-2 bg-slate-50 rounded-md">
                       <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
@@ -161,22 +160,22 @@ const VehicleDetails = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Vehicle Number</label>
-                        <input 
-                          type="text" 
-                          className="input-field uppercase" 
-                          value={formData.vehicle_no} 
-                          onChange={e => setFormData({...formData, vehicle_no: e.target.value.toUpperCase()})} 
-                          required 
+                        <input
+                          type="text"
+                          className="input-field uppercase"
+                          value={formData.vehicle_no}
+                          onChange={e => setFormData({ ...formData, vehicle_no: e.target.value.toUpperCase() })}
+                          required
                         />
                       </div>
                       <div className="space-y-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Device IMEI</label>
-                        <input 
-                          type="text" 
-                          className="input-field" 
-                          value={formData.imei} 
-                          onChange={e => setFormData({...formData, imei: e.target.value})} 
-                          required 
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={formData.imei}
+                          onChange={e => setFormData({ ...formData, imei: e.target.value })}
+                          required
                         />
                       </div>
                     </div>
@@ -184,19 +183,19 @@ const VehicleDetails = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Model Name</label>
-                        <input 
-                          type="text" 
-                          className="input-field" 
-                          value={formData.model} 
-                          onChange={e => setFormData({...formData, model: e.target.value})} 
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={formData.model}
+                          onChange={e => setFormData({ ...formData, model: e.target.value })}
                         />
                       </div>
                       <div className="space-y-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Vehicle Type</label>
-                        <select 
-                          className="input-field appearance-none" 
-                          value={formData.vehicle_type_id} 
-                          onChange={e => setFormData({...formData, vehicle_type_id: e.target.value})}
+                        <select
+                          className="input-field appearance-none"
+                          value={formData.vehicle_type_id}
+                          onChange={e => setFormData({ ...formData, vehicle_type_id: e.target.value })}
                         >
                           <option value="">Select Type</option>
                           {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -207,31 +206,31 @@ const VehicleDetails = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Capacity</label>
-                        <input 
-                          type="text" 
-                          className="input-field" 
-                          value={formData.capacity} 
-                          onChange={e => setFormData({...formData, capacity: e.target.value})} 
+                        <input
+                          type="text"
+                          className="input-field"
+                          value={formData.capacity}
+                          onChange={e => setFormData({ ...formData, capacity: e.target.value })}
                         />
                       </div>
                       <div className="space-y-1">
                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Initial Odometer (km)</label>
-                        <input 
-                          type="number" 
-                          className="input-field" 
-                          value={formData.odo_meter} 
-                          onChange={e => setFormData({...formData, odo_meter: e.target.value})} 
+                        <input
+                          type="number"
+                          className="input-field"
+                          value={formData.odo_meter}
+                          onChange={e => setFormData({ ...formData, odo_meter: e.target.value })}
                         />
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-md border border-slate-100">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         id="is_active"
                         className="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary/20"
                         checked={formData.is_active}
-                        onChange={e => setFormData({...formData, is_active: e.target.checked})}
+                        onChange={e => setFormData({ ...formData, is_active: e.target.checked })}
                       />
                       <label htmlFor="is_active" className="text-xs font-bold text-slate-600 uppercase tracking-widest cursor-pointer">
                         Mark as Active Asset
@@ -239,8 +238,8 @@ const VehicleDetails = () => {
                     </div>
 
                     <div className="pt-4 border-t border-slate-100 flex items-center gap-3">
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         disabled={isSaving}
                         className="btn-primary !w-auto px-8"
                       >
