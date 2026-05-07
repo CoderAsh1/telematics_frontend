@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
-import { 
+import {
   Plus, Search, Edit2, Trash2, Truck, Save, X, ChevronRight
 } from 'lucide-react';
 import * as vehicleApi from '../../api/vehicles';
@@ -54,7 +54,7 @@ const Vehicles = () => {
   const fetchTypes = async () => {
     try {
       const response = await vehicleApi.getVehicleTypes();
-      setTypes(response.data);
+      setTypes(response.data.data);
     } catch (error) {
       console.error('Error fetching types:', error);
     }
@@ -115,7 +115,7 @@ const Vehicles = () => {
               <h1 className="text-xl font-black text-dark tracking-tight">Fleet Management</h1>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Manage your tracking assets and devices</p>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-4 py-1.5">
                 <Plus size={16} />
@@ -158,7 +158,7 @@ const Vehicles = () => {
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {isLoading ? (
-                      [1,2,3,4,5].map(i => (
+                      [1, 2, 3, 4, 5].map(i => (
                         <tr key={i} className="animate-pulse">
                           <td colSpan="5" className="px-4 py-4"><div className="h-4 bg-slate-50 rounded w-full" /></td>
                         </tr>
@@ -187,14 +187,14 @@ const Vehicles = () => {
                           </td>
                           <td className="px-4 py-3 text-right">
                             <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); handleOpenModal(vehicle); }} 
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleOpenModal(vehicle); }}
                                 className="p-1.5 text-slate-400 hover:text-primary rounded-md hover:bg-white"
                               >
                                 <Edit2 size={14} />
                               </button>
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); handleDelete(vehicle.id); }} 
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDelete(vehicle.id); }}
                                 className="p-1.5 text-slate-400 hover:text-red-500 rounded-md hover:bg-white"
                               >
                                 <Trash2 size={14} />
@@ -214,9 +214,9 @@ const Vehicles = () => {
                   </tbody>
                 </table>
               </div>
-              <Pagination 
-                pagination={pagination} 
-                onPageChange={handlePageChange} 
+              <Pagination
+                pagination={pagination}
+                onPageChange={handlePageChange}
               />
             </div>
           </div>
@@ -234,28 +234,28 @@ const Vehicles = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Vehicle No</label>
-                    <input type="text" className="input-field" value={formData.vehicle_no} onChange={e => setFormData({...formData, vehicle_no: e.target.value})} required />
+                    <input type="text" className="input-field" value={formData.vehicle_no} onChange={e => setFormData({ ...formData, vehicle_no: e.target.value })} required />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">IMEI</label>
-                    <input type="text" className="input-field" value={formData.imei} onChange={e => setFormData({...formData, imei: e.target.value})} required />
+                    <input type="text" className="input-field" value={formData.imei} onChange={e => setFormData({ ...formData, imei: e.target.value })} required />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
-                    <select className="input-field appearance-none" value={formData.vehicle_type_id} onChange={e => setFormData({...formData, vehicle_type_id: e.target.value})}>
+                    <select className="input-field appearance-none" value={formData.vehicle_type_id} onChange={e => setFormData({ ...formData, vehicle_type_id: e.target.value })}>
                       <option value="">Select Type</option>
                       {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
                   </div>
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Capacity</label>
-                    <input type="text" className="input-field" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} />
+                    <input type="text" className="input-field" value={formData.capacity} onChange={e => setFormData({ ...formData, capacity: e.target.value })} />
                   </div>
                 </div>
                 <button type="submit" className="btn-primary mt-2">
-                  <Save size={16} /> 
+                  <Save size={16} />
                   {selectedVehicle ? 'Update' : 'Create'} Asset
                 </button>
               </form>
