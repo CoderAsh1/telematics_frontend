@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { 
-  Plus, Edit2, Trash2, Truck, Settings as SettingsIcon, 
+import {
+  Plus, Edit2, Trash2, Truck, Settings as SettingsIcon,
   ChevronRight, Save, X, Image as ImageIcon, Check,
   Activity, AlertCircle, Upload, Eye, Loader2
 } from 'lucide-react';
@@ -15,7 +15,6 @@ const Settings = () => {
   const [selectedType, setSelectedType] = useState(null);
   const [typeIcons, setTypeIcons] = useState({});
   const [isUploading, setIsUploading] = useState(false);
-
   const [typeFormData, setTypeFormData] = useState({ name: '', description: '' });
 
   useEffect(() => {
@@ -26,7 +25,7 @@ const Settings = () => {
     setIsLoading(true);
     try {
       const res = await vehicleApi.getVehicleTypes();
-      setTypes(res.data);
+      setTypes(res.data.data);
     } catch (err) {
       console.error('Failed to fetch types:', err);
     } finally {
@@ -50,7 +49,7 @@ const Settings = () => {
     try {
       const res = await vehicleApi.getTypeIcons(type.id);
       const iconMap = {};
-      res.data.forEach(icon => {
+      res.data.data.forEach(icon => {
         iconMap[icon.status] = icon.icon_url;
       });
       setTypeIcons(iconMap);
@@ -105,14 +104,14 @@ const Settings = () => {
           </div>
         )}
       </div>
-      
+
       <div className="relative">
         <label className="flex items-center justify-center gap-2 w-full py-3 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary hover:border-primary/30 transition-all cursor-pointer">
           {isUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
           {iconUrl ? 'Update Icon' : 'Upload Icon'}
-          <input 
-            type="file" 
-            className="hidden" 
+          <input
+            type="file"
+            className="hidden"
             accept="image/*"
             onChange={(e) => e.target.files[0] && handleIconUpload(status, e.target.files[0])}
             disabled={isUploading}
@@ -142,8 +141,8 @@ const Settings = () => {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {isLoading ? (
-                [1,2,3,4].map(i => <div key={i} className="h-40 bg-white rounded-md animate-pulse border border-slate-200" />)
-              ) : types.map((type) => (
+                [1, 2, 3, 4].map(i => <div key={i} className="h-40 bg-white rounded-md animate-pulse border border-slate-200" />)
+              ) : types?.map((type) => (
                 <div key={type.id} className="bg-white p-4 rounded-md border border-slate-200 shadow-sm group">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-10 h-10 bg-slate-50 rounded-md flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
@@ -163,7 +162,7 @@ const Settings = () => {
                         <Activity size={10} className="text-success" />
                         Assets
                       </div>
-                      <button 
+                      <button
                         onClick={() => handleOpenIconModal(type)}
                         className="text-[9px] font-black uppercase tracking-widest text-primary hover:underline"
                       >
@@ -188,11 +187,11 @@ const Settings = () => {
               <form onSubmit={handleTypeSubmit} className="space-y-4">
                 <div className="space-y-1">
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Name</label>
-                  <input type="text" className="input-field" value={typeFormData.name} onChange={e => setTypeFormData({...typeFormData, name: e.target.value})} required />
+                  <input type="text" className="input-field" value={typeFormData.name} onChange={e => setTypeFormData({ ...typeFormData, name: e.target.value })} required />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Description</label>
-                  <textarea className="input-field h-24 resize-none" value={typeFormData.description} onChange={e => setTypeFormData({...typeFormData, description: e.target.value})} />
+                  <textarea className="input-field h-24 resize-none" value={typeFormData.description} onChange={e => setTypeFormData({ ...typeFormData, description: e.target.value })} />
                 </div>
                 <button type="submit" className="btn-primary mt-2">Save Type</button>
               </form>
@@ -211,7 +210,7 @@ const Settings = () => {
                 </div>
                 <button onClick={() => setIsIconModalOpen(false)} className="p-1 text-slate-400 hover:text-dark"><X size={20} /></button>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 {['moving', 'idle', 'stopped', 'offline'].map(status => (
                   <div key={status} className="p-3 bg-slate-50 rounded-md border border-slate-100 flex items-center justify-between">
@@ -223,12 +222,12 @@ const Settings = () => {
                       )}
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{status}</span>
                     </div>
-                    
+
                     <label className="p-1.5 bg-white border border-slate-200 rounded-md text-slate-400 hover:text-primary cursor-pointer">
                       {isUploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
-                      <input 
-                        type="file" 
-                        className="hidden" 
+                      <input
+                        type="file"
+                        className="hidden"
                         accept="image/*"
                         onChange={(e) => e.target.files[0] && handleIconUpload(status, e.target.files[0])}
                         disabled={isUploading}
