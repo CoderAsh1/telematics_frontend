@@ -50,14 +50,14 @@ const Users = () => {
       <div className="flex flex-col h-full bg-slate-50">
         {/* Header Section */}
         <div className="bg-white border-b border-slate-200 p-4 sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-xl font-black text-dark tracking-tight">User Management</h1>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Manage system users and access roles</p>
             </div>
             
             <div className="flex items-center gap-3">
-              <button className="btn-primary !w-auto px-4 py-1.5">
+              <button className="btn-primary !w-auto px-4 py-1.5 text-[11px]">
                 <UserPlus size={16} />
                 Add User
               </button>
@@ -66,12 +66,12 @@ const Users = () => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 p-3 sm:p-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-7xl mx-auto">
             <div className="bg-white rounded-md border border-slate-200 shadow-sm overflow-hidden">
               {/* Table Search */}
               <div className="p-3 border-b border-slate-50 bg-slate-50/30">
-                <div className="relative group max-w-xs">
+                <div className="relative group w-full sm:max-w-xs">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
                   <input
                     type="text"

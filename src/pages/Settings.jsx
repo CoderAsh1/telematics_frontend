@@ -125,21 +125,21 @@ const Settings = () => {
     <Layout>
       <div className="flex flex-col h-full bg-slate-50">
         <div className="bg-white border-b border-slate-200 p-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-xl font-black text-dark tracking-tight">System Settings</h1>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Global configuration & mapping</p>
             </div>
-            <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-4 py-1.5">
+            <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-4 py-1.5 text-[11px]">
               <Plus size={16} />
               Add Type
             </button>
           </div>
         </div>
 
-        <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 p-3 sm:p-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {isLoading ? (
                 [1, 2, 3, 4].map(i => <div key={i} className="h-40 bg-white rounded-md animate-pulse border border-slate-200" />)
               ) : types?.map((type) => (
@@ -178,8 +178,8 @@ const Settings = () => {
 
         {/* Type Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/40 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-md rounded-md p-6 shadow-2xl">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-dark/40 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-md rounded-md p-5 sm:p-6 shadow-2xl overflow-y-auto max-h-[90vh]">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-black text-dark tracking-tight">{selectedType ? 'Edit' : 'Add'} Type</h2>
                 <button onClick={() => setIsModalOpen(false)} className="p-1 text-slate-400 hover:text-dark"><X size={20} /></button>
@@ -201,8 +201,8 @@ const Settings = () => {
 
         {/* Icon Management Modal */}
         {isIconModalOpen && selectedType && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/40 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-xl rounded-md p-6 shadow-2xl">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-dark/40 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-xl rounded-md p-5 sm:p-6 shadow-2xl overflow-y-auto max-h-[90vh]">
               <div className="flex justify-between items-center mb-6">
                 <div>
                   <h2 className="text-lg font-black text-dark tracking-tight">Icon Mapping</h2>
@@ -211,7 +211,7 @@ const Settings = () => {
                 <button onClick={() => setIsIconModalOpen(false)} className="p-1 text-slate-400 hover:text-dark"><X size={20} /></button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {['moving', 'idle', 'stopped', 'offline'].map(status => (
                   <div key={status} className="p-3 bg-slate-50 rounded-md border border-slate-100 flex items-center justify-between">
                     <div className="flex items-center gap-3">

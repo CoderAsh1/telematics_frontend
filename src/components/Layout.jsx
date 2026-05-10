@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -12,12 +12,14 @@ import {
   ChevronRight,
   Menu,
   Truck,
-  SettingsIcon
+  SettingsIcon,
+  X
 } from 'lucide-react';
 
 const Layout = ({ children, hideSidebar = false }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
@@ -35,16 +37,38 @@ const Layout = ({ children, hideSidebar = false }) => {
     navigate('/');
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-dark overflow-hidden">
+    <div className="flex h-screen bg-slate-50 font-sans text-dark overflow-hidden relative">
+      {/* Sidebar Overlay for Mobile */}
+      {!hideSidebar && isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-dark/40 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       {!hideSidebar && (
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col z-30 shadow-sm transition-all duration-300">
-          <div className="p-4 border-b border-slate-50">
+        <aside className={`
+          fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col shadow-xl lg:shadow-sm transition-transform duration-300 transform
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0 lg:static lg:inset-auto
+        `}>
+          <div className="p-4 border-b border-slate-50 flex items-center justify-between">
             <h1 className="text-lg font-black tracking-tighter flex items-center gap-2">
               <span className="text-primary">BDPH</span>
               <span className="text-slate-400 font-light text-base">PRO</span>
             </h1>
+            <button 
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="lg:hidden p-1 text-slate-400 hover:text-dark transition-colors"
+            >
+              <X size={20} />
+            </button>
           </div>
 
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar">
@@ -53,6 +77,7 @@ const Layout = ({ children, hideSidebar = false }) => {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center justify-between px-3 py-2 rounded-md transition-all group ${isActive(item.path)
                   ? 'bg-primary text-white shadow-sm'
                   : 'text-slate-500 hover:bg-slate-50 hover:text-primary'
@@ -86,6 +111,14 @@ const Layout = ({ children, hideSidebar = false }) => {
         {/* Header */}
         <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-20 shrink-0">
           <div className="flex items-center gap-4 flex-1">
+            {!hideSidebar && (
+              <button 
+                onClick={toggleMobileMenu}
+                className="lg:hidden p-1.5 text-slate-500 hover:bg-slate-50 rounded-md transition-all"
+              >
+                <Menu size={20} />
+              </button>
+            )}
             {hideSidebar && (
               <div className="mr-4">
                 <h1 className="text-lg font-black tracking-tighter flex items-center gap-2">

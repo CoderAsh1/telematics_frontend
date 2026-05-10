@@ -39,7 +39,7 @@ const Login = () => {
       {/* Left side: Content & Form */}
       <div className="w-full lg:w-[45%] flex flex-col p-8 lg:p-16 xl:p-24 justify-between bg-white relative z-20">
         <div className="max-w-md w-full mx-auto lg:mx-0">
-          <div className="flex items-center gap-3 mb-24 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-3 mb-12 sm:mb-24 animate-in fade-in slide-in-from-top-4 duration-700">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
               <ShieldCheck size={24} />
             </div>
@@ -48,7 +48,7 @@ const Login = () => {
 
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 stagger-1">
             <div className="space-y-4">
-              <h2 className="text-5xl font-black text-dark tracking-tighter leading-none">Sign in.</h2>
+              <h2 className="text-4xl sm:text-5xl font-black text-dark tracking-tighter leading-none">Sign in.</h2>
               <p className="text-slate-500 font-medium text-lg">Enter your details to access your fleet.</p>
             </div>
 
@@ -135,8 +135,8 @@ const Login = () => {
           className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity scale-110"
         />
         
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-20 px-12">
-          <div className="glass-panel p-12 rounded-[40px] animate-in zoom-in-95 duration-1000">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-20 px-8 lg:px-12">
+          <div className="glass-panel p-8 lg:p-12 rounded-[30px] lg:rounded-[40px] animate-in zoom-in-95 duration-1000">
             <div className="space-y-8">
               <div className="space-y-4">
                 <span className="px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Coming Soon</span>

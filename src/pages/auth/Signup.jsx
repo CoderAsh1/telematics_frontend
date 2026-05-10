@@ -39,7 +39,7 @@ const Signup = () => {
       {/* Left side: Form */}
       <div className="w-full lg:w-[45%] flex flex-col p-8 lg:p-16 xl:p-24 justify-between bg-white relative z-20 overflow-y-auto custom-scrollbar">
         <div className="max-w-md w-full mx-auto lg:mx-0 py-8">
-          <div className="flex items-center gap-3 mb-24 animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-3 mb-12 sm:mb-24 animate-in fade-in slide-in-from-top-4 duration-700">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
               <ShieldCheck size={24} />
             </div>
@@ -48,7 +48,7 @@ const Signup = () => {
 
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 stagger-1">
             <div className="space-y-4">
-              <h2 className="text-5xl font-black text-dark tracking-tighter leading-none">Join us.</h2>
+              <h2 className="text-4xl sm:text-5xl font-black text-dark tracking-tighter leading-none">Join us.</h2>
               <p className="text-slate-500 font-medium text-lg">Start managing your fleet with precision today.</p>
             </div>
 
@@ -170,14 +170,14 @@ const Signup = () => {
           className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity scale-110"
         />
         
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-20 px-12 text-center">
-          <div className="glass-panel p-16 rounded-[48px] animate-in zoom-in-95 duration-1000">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-20 px-8 lg:px-12 text-center">
+          <div className="glass-panel p-10 lg:p-16 rounded-[40px] lg:rounded-[48px] animate-in zoom-in-95 duration-1000">
             <div className="space-y-8">
-              <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
                 <ShieldCheck size={40} className="text-primary" />
               </div>
               <div className="space-y-4">
-                <h3 className="text-4xl font-black text-dark tracking-tighter leading-tight">Secure. Reliable. Fast.</h3>
+                <h3 className="text-3xl sm:text-4xl font-black text-dark tracking-tighter leading-tight">Secure. Reliable. Fast.</h3>
                 <p className="text-slate-600 leading-relaxed font-medium">
                   The infrastructure for modern telematics. Trusted by industry leaders worldwide.
                 </p>

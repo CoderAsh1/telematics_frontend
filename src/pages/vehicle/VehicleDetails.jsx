@@ -93,23 +93,23 @@ const VehicleDetails = () => {
         {/* Header Section */}
         <div className="bg-white border-b border-slate-200 p-4 sticky top-0 z-10">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => navigate('/vehicles')}
-                className="p-2 bg-slate-50 text-slate-400 hover:text-primary rounded-md transition-colors"
+                className="p-1.5 sm:p-2 bg-slate-50 text-slate-400 hover:text-primary rounded-md transition-colors"
               >
                 <ArrowLeft size={16} />
               </button>
               <div>
-                <h1 className="text-xl font-black text-dark tracking-tight">Vehicle Details</h1>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Configuration and telemetry settings</p>
+                <h1 className="text-lg sm:text-xl font-black text-dark tracking-tight">Vehicle Details</h1>
+                <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest">Configuration and telemetry settings</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 p-3 sm:p-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto">
             {message.text && (
               <div className={`mb-4 p-3 rounded-md flex items-center gap-3 animate-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-success/10 text-success border border-success/20' : 'bg-red-50 text-red-600 border border-red-100'
@@ -241,7 +241,7 @@ const VehicleDetails = () => {
                       <button
                         type="submit"
                         disabled={isSaving}
-                        className="btn-primary !w-auto px-8"
+                        className="btn-primary !w-full sm:!w-auto px-8"
                       >
                         {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                         Update Configuration

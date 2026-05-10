@@ -101,6 +101,7 @@ const LiveTracker = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isListOpen, setIsListOpen] = useState(window.innerWidth >= 1024);
 
   // Initial Fetch
   useEffect(() => {
@@ -195,8 +196,20 @@ const LiveTracker = () => {
   return (
     <Layout hideSidebar={true}>
       <div className="flex h-full overflow-hidden bg-slate-50 relative">
+        {/* Mobile Toggle for List */}
+        <button 
+          onClick={() => setIsListOpen(!isListOpen)}
+          className="absolute top-20 left-4 z-30 lg:hidden p-2.5 bg-white border border-slate-200 rounded-md shadow-lg text-primary"
+        >
+          {isListOpen ? <X size={20} /> : <Search size={20} />}
+        </button>
+
         {/* Left Overlay: Minimalist Fleet List */}
-        <div className="absolute top-4 left-4 bottom-4 w-72 flex flex-col bg-white border border-slate-200 z-10 shadow-lg rounded-md overflow-hidden">
+        <div className={`
+          absolute top-4 left-4 bottom-4 w-72 flex flex-col bg-white border border-slate-200 z-10 shadow-lg rounded-md overflow-hidden transition-transform duration-300
+          ${isListOpen ? 'translate-x-0' : '-translate-x-[calc(100%+20px)]'}
+          lg:translate-x-0
+        `}>
           <div className="p-3 border-b border-slate-100 space-y-2">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-black text-dark tracking-tight">Fleet Assets</h2>
@@ -227,7 +240,10 @@ const LiveTracker = () => {
               filteredVehicles.map((vehicle) => (
                 <button
                   key={vehicle.vehicle_id}
-                  onClick={() => setSelectedVehicle(vehicle)}
+                  onClick={() => {
+                    setSelectedVehicle(vehicle);
+                    if (window.innerWidth < 1024) setIsListOpen(false);
+                  }}
                   className={`w-full p-2.5 rounded-md text-left transition-all duration-200 group flex items-center gap-3 ${selectedVehicle?.vehicle_id === vehicle.vehicle_id
                     ? 'bg-primary text-white shadow-md'
                     : 'hover:bg-slate-50 bg-white border border-transparent hover:border-slate-100'
@@ -297,8 +313,8 @@ const LiveTracker = () => {
 
           {/* Selected Vehicle Overlay (Compact) */}
           {selectedVehicle && (
-            <div className="absolute bottom-4 right-4 z-20 w-80">
-              <div className="bg-white border border-slate-200 p-4 rounded-md shadow-xl animate-in slide-in-from-right-4">
+            <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-20 sm:w-80">
+              <div className="bg-white border border-slate-200 p-4 rounded-md shadow-xl animate-in slide-in-from-bottom-4 sm:slide-in-from-right-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-primary/10 rounded-md flex items-center justify-center text-primary">
@@ -314,7 +330,7 @@ const LiveTracker = () => {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mb-4">
+                <div className="grid grid-cols-2 gap-2">
                   <div className="bg-slate-50 p-2 rounded-md border border-slate-100">
                     <p className="text-[8px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Speed</p>
                     <div className="flex items-center gap-1.5 text-primary">
@@ -330,16 +346,6 @@ const LiveTracker = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* <div className="flex gap-2">
-                  <button className="flex-1 bg-dark text-white py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2">
-                    <Navigation size={12} />
-                    Locate
-                  </button>
-                  <button className="p-1.5 bg-white text-slate-400 border border-slate-200 rounded-md hover:text-dark">
-                    <MoreVertical size={14} />
-                  </button>
-                </div> */}
               </div>
             </div>
           )}

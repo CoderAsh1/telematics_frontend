@@ -110,14 +110,14 @@ const Vehicles = () => {
     <Layout>
       <div className="flex flex-col h-full bg-slate-50">
         <div className="bg-white border-b border-slate-200 p-4">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-xl font-black text-dark tracking-tight">Fleet Management</h1>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Manage your tracking assets and devices</p>
             </div>
 
             <div className="flex items-center gap-3">
-              <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-4 py-1.5">
+              <button onClick={() => handleOpenModal()} className="btn-primary !w-auto px-4 py-1.5 text-[11px]">
                 <Plus size={16} />
                 Add Vehicle
               </button>
@@ -125,12 +125,12 @@ const Vehicles = () => {
           </div>
         </div>
 
-        <div className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 p-3 sm:p-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-7xl mx-auto">
             <div className="bg-white rounded-md border border-slate-200 shadow-sm overflow-hidden">
               {/* Table Search */}
               <div className="p-3 border-b border-slate-50 bg-slate-50/30">
-                <div className="relative group max-w-xs">
+                <div className="relative group w-full sm:max-w-xs">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
                   <input
                     type="text"
@@ -186,7 +186,7 @@ const Vehicles = () => {
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{vehicle.capacity || '-'}</p>
                           </td>
                           <td className="px-4 py-3 text-right">
-                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center justify-end gap-1 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleOpenModal(vehicle); }}
                                 className="p-1.5 text-slate-400 hover:text-primary rounded-md hover:bg-white"
@@ -223,15 +223,15 @@ const Vehicles = () => {
         </div>
 
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-dark/40 backdrop-blur-sm animate-in fade-in">
-            <div className="bg-white w-full max-w-lg rounded-md p-6 shadow-2xl animate-in zoom-in-95">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-dark/40 backdrop-blur-sm animate-in fade-in">
+            <div className="bg-white w-full max-w-lg rounded-md p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 overflow-y-auto max-h-[90vh]">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-black text-dark tracking-tight">{selectedVehicle ? 'Update' : 'Add'} Vehicle</h2>
                 <button onClick={() => setIsModalOpen(false)} className="p-1 text-slate-400 hover:text-dark transition-colors"><X size={20} /></button>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Vehicle No</label>
                     <input type="text" className="input-field" value={formData.vehicle_no} onChange={e => setFormData({ ...formData, vehicle_no: e.target.value })} required />
@@ -241,7 +241,7 @@ const Vehicles = () => {
                     <input type="text" className="input-field" value={formData.imei} onChange={e => setFormData({ ...formData, imei: e.target.value })} required />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
                     <select className="input-field appearance-none" value={formData.vehicle_type_id} onChange={e => setFormData({ ...formData, vehicle_type_id: e.target.value })}>
