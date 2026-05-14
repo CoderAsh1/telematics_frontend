@@ -13,10 +13,11 @@ import {
   Menu,
   Truck,
   SettingsIcon,
-  X
+  X,
+  ArrowLeft
 } from 'lucide-react';
 
-const Layout = ({ children, hideSidebar = false }) => {
+const Layout = ({ children, hideSidebar = false, showBack = false }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -119,8 +120,17 @@ const Layout = ({ children, hideSidebar = false }) => {
                 <Menu size={20} />
               </button>
             )}
-            {hideSidebar && (
-              <div className="mr-4">
+            
+            {(hideSidebar || showBack) && (
+              <div className="flex items-center gap-3">
+                {showBack && (
+                  <button 
+                    onClick={() => navigate(-1)}
+                    className="p-1.5 text-slate-400 hover:text-primary hover:bg-slate-50 rounded-md transition-all"
+                  >
+                    <ArrowLeft size={20} />
+                  </button>
+                )}
                 <h1 className="text-lg font-black tracking-tighter flex items-center gap-2">
                   <span className="text-primary">BDPH</span>
                   <span className="text-slate-400 font-light text-base">PRO</span>

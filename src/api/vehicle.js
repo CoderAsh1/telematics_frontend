@@ -18,9 +18,9 @@ export const getLiveVehicles = async () => {
   }
 };
 
-export const getVehicleTelemetry = async (vehicleId) => {
+export const getVehicleTelemetry = async (vehicleId, params) => {
   try {
-    const response = await api.get(`/vehicles/${vehicleId}/telemetry`);
+    const response = await api.get(`/vehicles/${vehicleId}/telemetry`, { params });
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Network error occurred' };
